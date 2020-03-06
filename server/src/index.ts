@@ -23,16 +23,7 @@ schema:await buildSchema({
 })
 
    apolloserver.applyMiddleware({app})
-
-<<<<<<< HEAD
-=======
-
-
-
-
-   
  
->>>>>>> master
     app.listen(4000,()=>{
     console.log('express server started!!')
 })
