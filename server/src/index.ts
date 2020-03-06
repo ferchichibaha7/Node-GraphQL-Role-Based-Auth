@@ -10,7 +10,6 @@ import { buildSchema } from "type-graphql";
 
 (async()=>{
     const app=express();
-    
     app.get('/',(_req,res)=>{
         res.send("hello")
     })
