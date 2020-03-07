@@ -4,4 +4,6 @@ import { Role } from "./entity/Role";
 export interface MyContext {
 req:Request,
 res:Response,
-payload?:{UserId:string}} 
+
+payload?:{UserId:string}
+} 
