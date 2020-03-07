@@ -38,7 +38,6 @@ context: ({req,res})=>({req,res})
 })
 
    apolloserver.applyMiddleware({app})
- 
     app.listen(4000,()=>{
     console.log('express server started!!')
 })
