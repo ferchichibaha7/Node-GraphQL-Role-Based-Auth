@@ -33,6 +33,14 @@ class LoginResponse {
 
 @Resolver()
 export class UserResolver {
+
+ // --------------------------------------------------------------- Hello Admin
+ @Query(() => String)
+ hello() {
+   return 'hello from server';
+ }
+
+
   // --------------------------------------------------------------- Hello Admin
   @Query(() => String)
   @UseMiddleware(isAuth)
