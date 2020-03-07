@@ -1,7 +1,8 @@
-import { isAuth } from './isAuth';
-import {  CreateAccessToken, CreateRefreshToken } from './Auth';
-import { MyContext } from './MyContext';
-import { User } from "./entity/User";
+import { Role } from './../entity/Role';
+import { CreateAccessToken } from './../Auth/Auth';
+import { CheckRole } from './../Middlewares/checkRole';
+
+
 import {
   Resolver,
   Query,
@@ -13,9 +14,15 @@ import {
   UseMiddleware
 } from "type-graphql";
 import { hash, compare } from "bcryptjs";
-import { CheckRole } from './checkRole';
-import { Role } from './entity/Role';
-import { RoleEnum } from './RoleEnum';
+
+import { MyContext } from "./../MyContext";
+import { isAuth } from "./../Middlewares/isAuth";
+import { RoleEnum } from "./../entity/RoleEnum";
+import { User } from "./../entity/User";
+import { CreateRefreshToken } from "./../Auth/Auth";
+
+
+
 
 
 @ObjectType()
@@ -26,22 +33,29 @@ class LoginResponse {
 
 @Resolver()
 export class UserResolver {
+
+
+
+
+  // --------------------------------------------------------------- Hello Admin
   @Query(() => String)
   @UseMiddleware(isAuth)
-  @UseMiddleware(CheckRole(RoleEnum.ROLE_ADMIN))
+  @UseMiddleware(CheckRole([RoleEnum.ROLE_ADMIN]))
   helloAdmin(@Ctx() {payload}:MyContext) {
  return `hello Admin with ID:${payload?.UserId!} `;
   }
 
+
+  // --------------------------------------------------------------- GetAll users
   @Query(() => [User])
   @UseMiddleware(isAuth)
-  @UseMiddleware(CheckRole(RoleEnum.ROLE_USER))
+  @UseMiddleware(CheckRole([RoleEnum.ROLE_USER,RoleEnum.ROLE_MOD]))
   async users() {
     return await User.find();
   }
 
 
-
+  // --------------------------------------------------------------- login
   @Mutation(() => LoginResponse)
   async login(
     @Arg("email") email: string,
@@ -61,8 +75,6 @@ export class UserResolver {
 {
 httpOnly:true // can't be access bu javascript or something
 })
-
-
     // Login successful
     return {
       accessToken: await CreateAccessToken(user)
@@ -71,7 +83,7 @@ httpOnly:true // can't be access bu javascript or something
 
 
 
-  
+  // --------------------------------------------------------------- register
   @Mutation(() => Boolean)
   async register(
     @Arg("email") email: string,

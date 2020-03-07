@@ -2,12 +2,12 @@ import { Role } from './entity/Role';
 import { User } from './entity/User';
 import "dotenv/config"
 import { createConnection } from 'typeorm';
-import { UserResolver } from './UserResolver';
+import { UserResolver } from './Resolvers/UserResolver';
 import "reflect-metadata";
 import express from "express"
 import {ApolloServer} from "apollo-server-express"
 import { buildSchema } from "type-graphql";
-import { RoleEnum } from './RoleEnum';
+import { RoleEnum } from './entity/RoleEnum';
 
 
 
