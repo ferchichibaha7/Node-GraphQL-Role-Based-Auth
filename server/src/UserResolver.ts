@@ -1,3 +1,6 @@
+import { isAuth } from './isAuth';
+import {  CreateAccessToken, CreateRefreshToken } from './Auth';
+import { MyContext } from './MyContext';
 import { User } from "./entity/User";
 import {
   Resolver,
@@ -5,10 +8,15 @@ import {
   Arg,
   Mutation,
   ObjectType,
-  Field
+  Field,
+  Ctx,
+  UseMiddleware
 } from "type-graphql";
 import { hash, compare } from "bcryptjs";
-import { sign } from "jsonwebtoken";
+import { CheckRole } from './checkRole';
+import { Role } from './entity/Role';
+import { RoleEnum } from './RoleEnum';
+
 
 @ObjectType()
 class LoginResponse {
@@ -19,19 +27,26 @@ class LoginResponse {
 @Resolver()
 export class UserResolver {
   @Query(() => String)
-  hello() {
- return "hi!";
+  @UseMiddleware(isAuth)
+  @UseMiddleware(CheckRole(RoleEnum.ROLE_ADMIN))
+  helloAdmin(@Ctx() {payload}:MyContext) {
+ return `hello Admin with ID:${payload?.UserId!} `;
   }
 
   @Query(() => [User])
+  @UseMiddleware(isAuth)
+  @UseMiddleware(CheckRole(RoleEnum.ROLE_USER))
   async users() {
     return await User.find();
   }
 
+
+
   @Mutation(() => LoginResponse)
   async login(
     @Arg("email") email: string,
-    @Arg("password") password: string
+    @Arg("password") password: string,
+    @Ctx() {res}:MyContext
   ): Promise<LoginResponse> {
     const user = await User.findOne({ where: { email } });
 
@@ -42,26 +57,38 @@ export class UserResolver {
     if (!valid) {
       throw new Error("bad password");
     }
+    res.cookie("BID",CreateRefreshToken(user),
+{
+httpOnly:true // can't be access bu javascript or something
+})
+
 
     // Login successful
     return {
-      accessToken: await sign({ UserId: user.id , UserEmail:user.email},"dfsdfsd5sdfs4sdfsdf",{
-          expiresIn:"15m"
-      })
+      accessToken: await CreateAccessToken(user)
     };
   }
 
+
+
+  
   @Mutation(() => Boolean)
   async register(
     @Arg("email") email: string,
-    @Arg("password") password: string
+    @Arg("password") password: string,
+   
   ) {
     const hashedpass = await hash(password, 12);
     try {
-      await User.insert({
+      const user =await  User.create({
         email,
-        password: hashedpass
+        password: hashedpass,
+       
       });
+      const userrole:any=await Role.findOne({name:RoleEnum.ROLE_USER})
+      
+      user.roles=[userrole]
+      User.save(user);
     } catch (error) {
       console.log(error);
       return false;
