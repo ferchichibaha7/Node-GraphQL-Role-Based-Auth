@@ -34,11 +34,13 @@ class LoginResponse {
 @Resolver()
 export class UserResolver {
 
- // --------------------------------------------------------------- Hello Admin
+
+ // --------------------------------------------------------------- Hello 
  @Query(() => String)
  hello() {
-   return 'hello from server';
+   return 'Server is running';
  }
+
 
 
   // --------------------------------------------------------------- Hello Admin
@@ -52,7 +54,7 @@ export class UserResolver {
   // --------------------------------------------------------------- GetAll users
   @Query(() => [User])
   @UseMiddleware(isAuth)
-  @UseMiddleware(CheckRole([RoleEnum.ROLE_USER, RoleEnum.ROLE_MOD]))
+  @UseMiddleware(CheckRole([RoleEnum.ROLE_ADMIN]))
   async users() {
     return await User.find();
   }
