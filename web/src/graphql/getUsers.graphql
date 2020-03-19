@@ -1,0 +1,10 @@
+query GetUsers{
+  users {
+ 
+    profile {
+      id
+      firstName
+      lastName
+    }
+  }
+}

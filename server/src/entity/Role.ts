@@ -3,7 +3,7 @@ import { ObjectType, Field, Int } from "type-graphql";
 import { User } from "./User";
 
 @ObjectType()
-@Entity("roles")
+@Entity("role")
 export class Role extends BaseEntity {
     @Field(()=>Int)
     @PrimaryGeneratedColumn()

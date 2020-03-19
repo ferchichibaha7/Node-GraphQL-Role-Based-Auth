@@ -9,7 +9,7 @@ return sign({ UserId: user.id,Authorization:user.roles},process.env.ACCESS_TOKEN
 }
 
 export const CreateRefreshToken = (user:User)=>{
-    return sign({ UserId: user.id,Authorization:user.roles},process.env.REFRESH_TOKEN_SECRET!,{
+    return sign({ UserId: user.id,Authorization:user.roles,TokenVersion:user.tokenVersion},process.env.REFRESH_TOKEN_SECRET!,{
         expiresIn:"7d"
       })
 }

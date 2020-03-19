@@ -16,7 +16,6 @@ if(context.payload){
       let exist:boolean=false
       role.forEach(r => {
         if ((userroles.indexOf(r)>-1)){
-        console.log("we good: "+r)
         exist=true;
          
         }
