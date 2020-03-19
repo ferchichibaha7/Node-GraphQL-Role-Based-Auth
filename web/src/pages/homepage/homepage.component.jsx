@@ -5,7 +5,7 @@ import './homepage.style.scss'
 
 export const Home = () => {
 
- const {data,error}= useGetUsersQuery({fetchPolicy:'network-only'})
+ const {data}= useGetUsersQuery({fetchPolicy:'network-only'})
 
 
  if(!data){
