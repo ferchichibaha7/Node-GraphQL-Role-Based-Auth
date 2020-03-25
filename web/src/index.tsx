@@ -8,7 +8,6 @@ import './index.scss'
 const Client = new ApolloClient({
   uri: "http://localhost:4000/graphql"
 });
-
 ReactDOM.render(
   <ApolloProvider client={Client}>
     <Routes />
